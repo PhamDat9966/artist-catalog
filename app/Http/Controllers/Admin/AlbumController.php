@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use App\Models\AlbumModel as MainModel;
 use App\Models\ArtistModel;
-use App\Http\Requests\ArtistRequest as MainRequest;
+use App\Http\Requests\AlbumRequest as MainRequest;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Admin\AdminController;
 class AlbumController extends AdminController
@@ -68,8 +68,10 @@ class AlbumController extends AdminController
         }
 
         $artistModel = new ArtistModel();
-        $artistList  = $artistModel::pluck('name', 'id');
-        $artistList  = $artistList->toArray();
+        $artistList          = $artistModel::pluck('name', 'id');
+        $artistList          = $artistList->toArray();
+        $firstArtistElement  = [0 => '-- Chọn nghệ sĩ cho album --'];
+        $artistList          = $firstArtistElement + $artistList;
 
         return view($this->pathViewController . 'form', [
             'item'          =>$item,
@@ -77,6 +79,8 @@ class AlbumController extends AdminController
             'artistList'    =>$artistList
         ]);
     }
+
+
 
 }
 
