@@ -1,0 +1,1 @@
+jQuery UI 1.14 supports latest versions of jQuery 1.x, 2.x, 3.x & 4.x
