@@ -27,9 +27,11 @@ class ArtistModel extends AdminModel
             $query = $this->from('artist', 'a')
                           ->select('a.id','a.name','a.thumb','a.status','a.created','a.created_by','a.modified','a.modified_by');
 
-            if($params['filter']['status'] !== "all"){
-               $query->where('a.status','=',$params['filter']['status']);
+            if(isset($params['filter']['status'])){
+                if($params['filter']['status'] !== "all"){
+                $query->where('a.status','=',$params['filter']['status']);
 
+                }
             }
 
             if($params['search'] !== ""){

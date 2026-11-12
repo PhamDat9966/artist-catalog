@@ -21,7 +21,7 @@ class AlbumModel extends AdminModel
     protected $guarded  = [];
 
     public function listItems($params = null,$options = null){
-
+        dd($params);
         $result = null;
         if($options['task'] == 'admin-list-items'){
             $query = $this->from('album', 'a')
