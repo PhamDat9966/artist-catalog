@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Oct 31, 2026 at 07:46 AM
+-- Generation Time: Nov 13, 2026 at 05:57 AM
 -- Server version: 8.4.3
 -- PHP Version: 8.4.12
 
@@ -76,7 +76,60 @@ INSERT INTO `artist` (`id`, `name`, `thumb`, `status`, `created`, `created_by`, 
 (2, 'Quang Lê', 'quangle.jpg', 'active', '2026-10-23 00:00:00', 'dat123', '2026-10-23 00:00:00', 'admin'),
 (3, 'Thu Minh', 'thuminh.jpg', 'active', '2026-10-23 00:00:00', 'dat123', '2026-10-23 00:00:00', 'admin'),
 (4, 'TLinh', 'tlinh.jpg', 'active', '2026-10-23 00:00:00', 'dat123', '2026-10-23 00:00:00', 'admin'),
-(10, 'Duy Khánh', 'NdMyoYEG79.jpg', 'active', '2026-10-31 00:00:00', 'admin', NULL, NULL);
+(10, 'Duy Khánh', 'LskYA6jaBX.jpg', 'active', '2026-10-31 00:00:00', 'admin', '2026-11-13 00:00:00', 'admin');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `artist_genre`
+--
+
+CREATE TABLE `artist_genre` (
+  `artist_id` int NOT NULL,
+  `genre_id` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `artist_genre`
+--
+
+INSERT INTO `artist_genre` (`artist_id`, `genre_id`) VALUES
+(1, 1),
+(2, 1),
+(10, 1),
+(1, 2),
+(2, 2),
+(3, 3),
+(4, 3),
+(4, 4),
+(10, 5);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `genres`
+--
+
+CREATE TABLE `genres` (
+  `id` int NOT NULL,
+  `name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'active',
+  `created` datetime DEFAULT NULL,
+  `created_by` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `modified` datetime DEFAULT NULL,
+  `modified_by` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `genres`
+--
+
+INSERT INTO `genres` (`id`, `name`, `status`, `created`, `created_by`, `modified`, `modified_by`) VALUES
+(1, 'Nhạc vàng', 'active', '2026-11-13 12:47:19', 'admin', NULL, NULL),
+(2, 'Nhạc trữ tình', 'active', '2026-11-13 12:47:19', 'admin', NULL, NULL),
+(3, 'Pop', 'active', '2026-11-13 12:47:19', 'admin', NULL, NULL),
+(4, 'Rap/Hip-hop', 'active', '2026-11-13 12:47:19', 'admin', NULL, NULL),
+(5, 'Nhạc lính', 'active', '2026-11-13 12:47:19', 'admin', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -127,6 +180,20 @@ ALTER TABLE `artist`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `artist_genre`
+--
+ALTER TABLE `artist_genre`
+  ADD PRIMARY KEY (`artist_id`,`genre_id`),
+  ADD KEY `fk_ag_genre` (`genre_id`);
+
+--
+-- Indexes for table `genres`
+--
+ALTER TABLE `genres`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_genres_name` (`name`);
+
+--
 -- Indexes for table `tracks`
 --
 ALTER TABLE `tracks`
@@ -150,6 +217,12 @@ ALTER TABLE `artist`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
+-- AUTO_INCREMENT for table `genres`
+--
+ALTER TABLE `genres`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
 -- AUTO_INCREMENT for table `tracks`
 --
 ALTER TABLE `tracks`
@@ -164,6 +237,13 @@ ALTER TABLE `tracks`
 --
 ALTER TABLE `album`
   ADD CONSTRAINT `fk_album_artist` FOREIGN KEY (`artist_id`) REFERENCES `artist` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `artist_genre`
+--
+ALTER TABLE `artist_genre`
+  ADD CONSTRAINT `fk_ag_artist` FOREIGN KEY (`artist_id`) REFERENCES `artist` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_ag_genre` FOREIGN KEY (`genre_id`) REFERENCES `genres` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `tracks`
