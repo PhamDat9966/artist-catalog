@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 13, 2026 at 05:57 AM
+-- Generation Time: Nov 14, 2026 at 05:17 AM
 -- Server version: 8.4.3
 -- PHP Version: 8.4.12
 
@@ -76,7 +76,7 @@ INSERT INTO `artist` (`id`, `name`, `thumb`, `status`, `created`, `created_by`, 
 (2, 'Quang Lê', 'quangle.jpg', 'active', '2026-10-23 00:00:00', 'dat123', '2026-10-23 00:00:00', 'admin'),
 (3, 'Thu Minh', 'thuminh.jpg', 'active', '2026-10-23 00:00:00', 'dat123', '2026-10-23 00:00:00', 'admin'),
 (4, 'TLinh', 'tlinh.jpg', 'active', '2026-10-23 00:00:00', 'dat123', '2026-10-23 00:00:00', 'admin'),
-(10, 'Duy Khánh', 'LskYA6jaBX.jpg', 'active', '2026-10-31 00:00:00', 'admin', '2026-11-13 00:00:00', 'admin');
+(10, 'Duy Khánh', 'LskYA6jaBX.jpg', 'active', '2026-10-31 00:00:00', 'admin', '2026-11-14 00:00:00', 'admin');
 
 -- --------------------------------------------------------
 
@@ -86,23 +86,26 @@ INSERT INTO `artist` (`id`, `name`, `thumb`, `status`, `created`, `created_by`, 
 
 CREATE TABLE `artist_genre` (
   `artist_id` int NOT NULL,
-  `genre_id` int NOT NULL
+  `genre_id` int NOT NULL,
+  `artist_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `genre_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `artist_genre`
 --
 
-INSERT INTO `artist_genre` (`artist_id`, `genre_id`) VALUES
-(1, 1),
-(2, 1),
-(10, 1),
-(1, 2),
-(2, 2),
-(3, 3),
-(4, 3),
-(4, 4),
-(10, 5);
+INSERT INTO `artist_genre` (`artist_id`, `genre_id`, `artist_name`, `genre_name`) VALUES
+(1, 1, NULL, NULL),
+(1, 2, NULL, NULL),
+(2, 1, NULL, NULL),
+(2, 2, NULL, NULL),
+(3, 3, NULL, NULL),
+(4, 3, NULL, NULL),
+(4, 4, NULL, NULL),
+(10, 1, NULL, NULL),
+(10, 2, NULL, NULL),
+(10, 5, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -113,6 +116,7 @@ INSERT INTO `artist_genre` (`artist_id`, `genre_id`) VALUES
 CREATE TABLE `genres` (
   `id` int NOT NULL,
   `name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'active',
   `created` datetime DEFAULT NULL,
   `created_by` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -124,12 +128,12 @@ CREATE TABLE `genres` (
 -- Dumping data for table `genres`
 --
 
-INSERT INTO `genres` (`id`, `name`, `status`, `created`, `created_by`, `modified`, `modified_by`) VALUES
-(1, 'Nhạc vàng', 'active', '2026-11-13 12:47:19', 'admin', NULL, NULL),
-(2, 'Nhạc trữ tình', 'active', '2026-11-13 12:47:19', 'admin', NULL, NULL),
-(3, 'Pop', 'active', '2026-11-13 12:47:19', 'admin', NULL, NULL),
-(4, 'Rap/Hip-hop', 'active', '2026-11-13 12:47:19', 'admin', NULL, NULL),
-(5, 'Nhạc lính', 'active', '2026-11-13 12:47:19', 'admin', NULL, NULL);
+INSERT INTO `genres` (`id`, `name`, `description`, `status`, `created`, `created_by`, `modified`, `modified_by`) VALUES
+(1, 'Nhạc vàng', 'Nhạc vàng là một dòng nhạc trữ tình, lãng mạn phổ biến tại Việt Nam, có sự kết hợp giữa phong cách tân nhạc và âm điệu dân ca Nam Bộ.', 'active', '2026-11-13 12:47:19', 'admin', '2026-11-14 00:00:00', 'admin'),
+(2, 'Nhạc trữ tình', 'Nhạc trữ tình là một thể loại âm nhạc tập trung bộc lộ, mô tả sâu sắc tình cảm, cảm xúc và tâm trạng của con người', 'active', '2026-11-13 12:47:19', 'admin', '2026-11-14 00:00:00', 'admin'),
+(3, 'Pop', 'Nhạc Pop (viết tắt của từ Popular music trong tiếng Anh, nghĩa là nhạc đại chúng) là một thể loại âm nhạc thương mại hướng đến số đông khán giả.', 'active', '2026-11-13 12:47:19', 'admin', '2026-11-14 00:00:00', 'admin'),
+(4, 'Rap/Hip-hop', 'Rap/Hip-hop là một nền văn hóa nghệ thuật đường phố và một thể loại âm nhạc lớn ra đời vào những năm 1970 tại khu Bronx, thành phố New York, Mỹ, bởi cộng đồng người Mỹ gốc Phi và Mỹ Latinh.', 'active', '2026-11-13 12:47:19', 'admin', '2026-11-14 00:00:00', 'admin'),
+(5, 'Nhạc lính', 'Nhạc lính là một dòng nhạc phổ biến tại miền Nam Việt Nam trước năm 1975, chuyên viết về cuộc sống, tâm tư, nỗi niềm và hình ảnh của người lính (chủ yếu là lính Việt Nam Cộng hòa) trong bối cảnh chiến tranh', 'active', '2026-11-13 12:47:19', 'admin', '2026-11-14 00:00:00', 'admin');
 
 -- --------------------------------------------------------
 

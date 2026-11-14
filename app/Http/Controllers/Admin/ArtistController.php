@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use App\Models\ArtistModel as MainModel;
+use App\Models\GenresModel;
 use App\Http\Requests\ArtistRequest as MainRequest;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Admin\AdminController;
@@ -26,6 +27,7 @@ class ArtistController extends AdminController
 
         // Lấy dữ liệu từ response của AdminController
         $data = $response->getData();
+        // dd($data['items']->toArray());
 
         return view($this->pathViewController . 'index', (array)$data);
     }
@@ -59,6 +61,15 @@ class ArtistController extends AdminController
             $this->params['id']   = $request->id;
             $autoIncrement        = $this->params['id'];
             $item = $this->model->getItem($this->params,['task'=>'get-item']);
+
+            //Genres: thể loại âm nhạc nghệ sĩ tham gia
+            $genreList = GenresModel::where('status', 'active')->pluck('name', 'id')->toArray();
+
+            $selectedGenres = [];
+            if (!empty($item['id'])) {
+                $selectedGenres = $item->genres()->pluck('genres.id')->toArray();
+            }
+
         }
 
         $nodes = $this->model->listItems($this->params, ['task'=>'admin-list-items-in-select-box']);
@@ -66,7 +77,9 @@ class ArtistController extends AdminController
         return view($this->pathViewController . 'form', [
             'item'          =>$item,
             'autoIncrement' =>$autoIncrement,
-            'nodes'         =>$nodes
+            'nodes'         =>$nodes,
+            'genreList'     =>$genreList,
+            'selectedGenres'=>$selectedGenres
         ]);
     }
 }

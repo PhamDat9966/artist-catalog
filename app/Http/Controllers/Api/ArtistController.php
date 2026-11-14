@@ -45,10 +45,14 @@ class ArtistController extends AdminController
 
     public function show($id)
     {
-        $artist = DB::table('artist')
-                    ->where('id', $id)
-                    ->where('status', 'active')
-                    ->first();
+        $this->params['id'] = $id;
+        $artist             = $this->model->getItem($this->params,['task' => "get-item-active"]);
+
+        /*
+            Đùng lệnh dd ở backend để gây lỗi chủ động, để frondend hiện url của backend->chạy url đó để trực tiếp
+            debug API controller của backend
+         */
+        // dd($artist->toArray());
 
         if (!$artist) {
             return response()->json(['message' => 'Không tìm thấy ca sĩ'], 404);
@@ -70,6 +74,7 @@ class ArtistController extends AdminController
                 'id'    => $artist->id,
                 'name'  => $artist->name,
                 'thumb' => $artist->thumb ? asset('images/artist/' . $artist->thumb) : null,
+                'genres'=> $artist->genres,
                 'albums'=> $albums
             ],
         ]);

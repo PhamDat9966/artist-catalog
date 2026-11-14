@@ -2,10 +2,12 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ArtistController;
 use App\Http\Controllers\Admin\AlbumController;
 use App\Http\Controllers\Admin\TracksController;
-use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\GenresController;
+
 
 
 $prefixAdmin = config('zvn.url.prefix_admin'); //admin96
@@ -56,6 +58,22 @@ Route::prefix($prefixAdmin)
         $controllerName = 'tracks';
         Route::prefix($controllerName)
             ->controller(TracksController::class)
+            ->group(function () use ($controllerName) {
+                Route::get('/', 'index')->name($controllerName);
+                Route::get('form/{id?}', 'form')
+                    ->name($controllerName . '/form')
+                    ->where('id', '[0-9]+');
+                Route::get('delete/{id}', 'delete')
+                    ->name($controllerName . '/delete')
+                    ->where('id', '[0-9]+');
+                Route::get('change-status-{status}/{id}', 'status')->name($controllerName . '/status');
+                Route::post('save/{id?}', 'save')->name($controllerName . '/save');
+            });
+
+        // ====================== GENRES ======================
+        $controllerName = 'genres';
+        Route::prefix($controllerName)
+            ->controller(GenresController::class)
             ->group(function () use ($controllerName) {
                 Route::get('/', 'index')->name($controllerName);
                 Route::get('form/{id?}', 'form')

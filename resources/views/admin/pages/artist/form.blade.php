@@ -9,6 +9,23 @@
     $status         = (isset($item['status']))? $item->status : '';
     $thumb          = (isset($item['thumb']))? $item->thumb : '';
 
+    $genreList     = $genreList ?? [];       // [id => name], truyền từ controller
+
+    //select multy:
+    $selectedGenres = $selectedGenres ?? []; // mảng id đã chọn của ca sĩ này
+
+    //check box:
+    $selectedGenres = old('genre_ids', $selectedGenres ?? []);
+    $genreCheckboxes = '';
+    foreach ($genreList as $gid => $gname) {
+        $checked = in_array($gid, (array) $selectedGenres) ? 'checked' : '';
+
+        $genreCheckboxes .= '<label style="margin-right:20px; font-weight:normal; cursor:pointer;">'
+                                .'<input type="checkbox" name="genre_ids[]" value="' . e($gid) . '" ' . $checked . '> '
+                                . e($gname)
+                           .'</label>';
+    }
+
     $formlabelAttr      = config('zvn.template.form_label');
     $formInputAttr      = config('zvn.template.form_input');
     $inputHiddenID      = html()->hidden('id', $id);
@@ -26,6 +43,17 @@
         [
             'label'     =>  html()->label('name', 'Name')->attributes($formlabelAttr),
             'element'   =>  html()->text('name', $name)->attributes($formInputAttr)
+        ],
+        // [
+        //     'label'     =>  html()->label('Thể loại', 'genre_ids')->attributes($formlabelAttr),
+        //     'element'   =>  html()->select('genre_ids[]', $genreList, $selectedGenres)
+        //                         ->multiple()
+        //                         ->id('genre_ids')
+        //                         ->attributes($formInputAttr)
+        // ],
+        [
+            'label'     =>  html()->label('Thể loại', 'genre_ids')->attributes($formlabelAttr),
+            'element'   =>  '<div style="padding:20px;">' . $genreCheckboxes . '</div>'
         ],
         [
             'label'     =>  html()->label('status', 'Status')->attributes($formlabelAttr),

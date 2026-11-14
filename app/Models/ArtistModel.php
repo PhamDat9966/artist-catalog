@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;     // Dùng để delete image theo loc
 use Illuminate\Support\Facades\Session;
 use App\Models\AlbumModel;
 use App\Models\TracksModel;
+use App\Models\GenresModel;
 
 // use Kalnoy\Nestedset\NodeTrait;
 
@@ -20,12 +21,18 @@ class ArtistModel extends AdminModel
     protected $crudNotActived = ['_token','thumb_current']; // 'thumb_current' ở đây nếu có tồn tại ảnh có sẵn thì không cần update
     protected $guarded  = [];
 
+    public function genres()
+    {
+        return $this->belongsToMany(GenresModel::class, 'artist_genre', 'artist_id', 'genre_id');
+    }
+
     public function listItems($params = null,$options = null){
 
         $result = null;
         if($options['task'] == 'admin-list-items'){
             $query = $this->from('artist', 'a')
-                          ->select('a.id','a.name','a.thumb','a.status','a.created','a.created_by','a.modified','a.modified_by');
+                          ->select('a.id','a.name','a.thumb','a.status','a.created','a.created_by','a.modified','a.modified_by')
+                          ->with('genres');
 
             if(isset($params['filter']['status'])){
                 if($params['filter']['status'] !== "all"){
@@ -168,9 +175,15 @@ class ArtistModel extends AdminModel
             $this->thumb        = $params['thumb'];
             $this->save();
 
+            /* Lưu thể loại */
+            $this->genres()->sync($params['genre_ids'] ?? []);
         }
 
         if($options['task'] == 'edit-item'){
+
+            // Tách genre_ids ra, không để lọt vào câu UPDATE của bảng artist
+            $genreIds = $params['genre_ids'] ?? [];
+            unset($params['genre_ids']);
 
             if(!empty($params["thumb"])){
 
@@ -192,6 +205,9 @@ class ArtistModel extends AdminModel
             //$params = array_diff_key($params,array_flip($this->crudNotActived)); // array_diff_key Hàm trả về sự khác nhau về key giữa mảng 1 và 2
             $coreParams   = $this->prepareParams($params);
             self::where('id', $coreParams['id'])->update($coreParams);
+
+            /* Lưu thể loại */
+            self::find($coreParams['id'])->genres()->sync($genreIds);
 
         }
 
@@ -272,11 +288,18 @@ class ArtistModel extends AdminModel
         $locale     = app()->getLocale();
         $result   = null;
         if($options['task'] == 'get-item'){
-            $result = $this::select('id','name','thumb','status')
-                    ->where('id', $params['id'])
-                    ->first();
-                    //->get();
+            $result = $this->where('id', $params['id'])
+                            ->where('status', 'active')
+                            ->with('genres')
+                            ->first();
 
+        }
+
+        if($options['task'] == 'get-item-active'){   // dùng cho frontend
+            $result = $this->where('id', $params['id'])
+                        ->where('status', 'active')
+                        ->with('genres')
+                        ->first();
         }
 
         if($options['task'] == 'get-thumb'){
@@ -284,26 +307,6 @@ class ArtistModel extends AdminModel
                     ->where('id', $params['id'])
                     ->first();
 
-        }
-
-        if($options['task'] == 'news-get-item'){
-            $result = $this::select('ca.id','cat.name','ca.display')
-                    ->from('category_article as ca')
-                    ->leftJoin('category_article_translations as cat', 'cat.category_article_id', '=', 'ca.id')
-                    ->where('ca.id', $params['category_id'])
-                    ->where('cat.locale',$locale)
-                    ->first();
-                    if($result != null) $result->toArray();
-        }
-
-        if($options['task'] == 'news-get-all-items-in-category'){
-            $result = $this::select('ca.id','cat.name','ca.display')
-                    ->from('category_article as ca')
-                    ->leftJoin('category_article_translations as cat', 'cat.category_article_id', '=', 'ca.id')
-                    ->where('ca.id', $params['category_id'])
-                    ->where('cat.locale',$locale)
-                    ->get();
-                    if($result != null) $result->toArray();
         }
 
         if($options['task'] == 'get-auto-increment'){

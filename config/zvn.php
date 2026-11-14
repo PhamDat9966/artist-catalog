@@ -201,12 +201,14 @@ return [
             'artist'                =>  ['all','id','name'],
             'album'                 =>  ['all','id','name'],
             'tracks'                =>  ['all','id','name'],
+            'genres'                =>  ['all','id','name'],
         ],
         'button'    =>[
             'default'               =>  ['edit','delete'],
             'artist'                =>  ['edit','delete'],
             'album'                 =>  ['edit','delete'],
             'tracks'                =>  ['edit','delete'],
+            'genres'                =>  ['edit','delete'],
         ],
         'lock'   =>[
             'attribute_main_id'     =>  [1,2,3],

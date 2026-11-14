@@ -34,12 +34,21 @@
                             $thumb              = Template::showItemThumb($controllerName,$miniThumb,$val['name']);
                             $status             = Template::showItemStatus( $controllerName,$id,$val['status']); // $controllerName đã được share tại SliderController.php
                             $listButtonAction   = Template::showButtonAction($controllerName, $id);
+
+                            //Genres:
+                            $xhtmlGenres        = '';
+                            foreach ($val->genres as $genre){
+                                $xhtmlGenres .= '<span class="label label-info">' . $genre->name . '</span>&nbsp;';
+                            }
+
                         @endphp
 
                         <tr class="{{$class}} pointer">
                             <td>{{ $index }}</td>
                             <td width="30%">
                                 <p><strong>Name:</strong> {!! $name !!}</p>
+                                <p><strong>Thể loại âm nhạc - Genres:</strong></p>
+                                <p>{!! $xhtmlGenres !!}</p>
                             </td>
                             <td width="20%">
                                 {!!$thumb!!}
