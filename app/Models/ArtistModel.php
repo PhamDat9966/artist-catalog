@@ -23,7 +23,8 @@ class ArtistModel extends AdminModel
 
     public function genres()
     {
-        return $this->belongsToMany(GenresModel::class, 'artist_genre', 'artist_id', 'genre_id');
+        return $this->belongsToMany(GenresModel::class, 'artist_genre', 'artist_id', 'genre_id')
+                    ->withPivot('artist_name', 'genre_name');
     }
 
     public function listItems($params = null,$options = null){
@@ -168,6 +169,12 @@ class ArtistModel extends AdminModel
             $thumb->storeAs($this->folderUpload, $params['thumb'],'zvn_storage_image_artist');
 
             /* Save dữ liệu theo eloquent */
+            /*
+                Sau save(), Eloquent gán id vừa được cấp vào $this->id. Nếu gọi sync() trước save()
+                thì $this->id là null và không có artist_id để ghi. Bạn đã đặt đúng thứ tự.
+                Ở edit-item, model cha là kết quả của self::find($coreParams['id']), nên id có sẵn từ lúc truy vấn.
+            */
+
             $this->name         = $params['name'];
             $this->status       = $params['status'];
             $this->created_by   = $params['created_by'];
@@ -176,7 +183,10 @@ class ArtistModel extends AdminModel
             $this->save();
 
             /* Lưu thể loại */
-            $this->genres()->sync($params['genre_ids'] ?? []);
+            // $this->genres()->sync($params['genre_ids'] ?? []);
+
+            /* Lưu thể loại với hàm $this->genres(), laravel đã “biết” đó là ca sĩ nào*/
+            $this->genres()->sync($this->buildGenrePivot($params['genre_ids'] ?? [], $params['name']));
         }
 
         if($options['task'] == 'edit-item'){
@@ -207,10 +217,58 @@ class ArtistModel extends AdminModel
             self::where('id', $coreParams['id'])->update($coreParams);
 
             /* Lưu thể loại */
-            self::find($coreParams['id'])->genres()->sync($genreIds);
+                // self::find($coreParams['id'])->genres()->sync($genreIds);
+            /* Lưu thể loại với hàm $this->genres(), laravel đã “biết” đó là ca sĩ nào*/
+            self::find($coreParams['id'])->genres()->sync(
+                $this->buildGenrePivot($genreIds, $params['name'])
+            );
 
         }
 
+    }
+    /*
+        sync() làm gì bên trong
+
+        sync() nhận danh sách thể loại mới và làm cho bảng artist_genre của ca sĩ này khớp với danh sách đó, theo 3 bước:
+
+        1. Đọc hiện trạng: SELECT genre_id FROM artist_genre WHERE artist_id = {id của $this}.
+        2. So sánh với danh sách mới (là các khóa của mảng bạn truyền vào).
+        3. Thực hiện chênh lệch:
+            Thể loại có trong DB nhưng không có trong danh sách mới → xóa (detach).
+            Thể loại có trong danh sách mới nhưng chưa có trong DB → thêm (attach), kèm các cột phụ.
+            Thể loại đã có ở cả hai → giữ lại, và chỉ UPDATE nếu các cột phụ (artist_name, genre_name) khác đi.
+
+        Ví dụ với Duy Khánh (id = 10), đang có thể loại [1, 2, 5], bạn bỏ chọn 1 và thêm 4, tức danh sách mới là [2, 4, 5]:
+
+        genre_id	Hành động
+        1	xóa dòng (10, 1)
+        2, 5	giữ lại (cập nhật tên nếu khác)
+        4	thêm dòng (10, 4, 'Duy Khánh', 'Rap/Hip-hop')
+     */
+
+    /**
+     * Chuyển [1, 2, 5] thành:
+     * [1 => ['artist_name' => '...', 'genre_name' => 'Nhạc vàng'], 2 => [...], ...]
+     * để sử dung Pivot, bổ xung thêm, tên artis và tên thể loại vào bản artist_genre
+     */
+    public function buildGenrePivot($genreIds, $artistName)
+    {
+        $genreIds = array_filter((array) $genreIds);
+        if (empty($genreIds)) return [];
+
+        // Lấy tên các thể loại bằng 1 truy vấn: [id => name]
+        $genreNames = GenresModel::whereIn('id', $genreIds)->pluck('name', 'id');
+
+        $data = [];
+        foreach ($genreIds as $genreId) {
+            if (!isset($genreNames[$genreId])) continue;   // bỏ qua id không tồn tại
+            $data[$genreId] = [
+                'artist_name' => $artistName,
+                'genre_name'  => $genreNames[$genreId],
+            ];
+        }
+        dd($data);
+        return $data;
     }
 
     public function deleteItem($params = null,$options = null){
@@ -250,39 +308,6 @@ class ArtistModel extends AdminModel
 
         }
     }
-
-    // public function deleteItem($params = null, $options = null)
-    // {
-    //     if ($options['task'] == 'delete-item') {
-
-    //         $artist = self::find($params['id']);
-    //         if (!$artist) return;
-
-    //         // 1. Thu thập tên file trước khi xóa DB
-    //         $albums      = DB::table('album')->where('artist_id', $artist->id)->get(['id', 'thumb']);
-    //         $albumThumbs = $albums->pluck('thumb')->filter()->all();
-    //         $audioFiles  = DB::table('tracks')
-    //                             ->whereIn('album_id', $albums->pluck('id'))
-    //                             ->pluck('audio')->filter()->all();
-    //         $artistThumb = $artist->thumb;
-
-    //         // 2. Xóa dữ liệu (album và tracks tự xóa theo nhờ CASCADE)
-    //         DB::transaction(function () use ($artist) {
-    //             $artist->delete();
-    //         });
-
-    //         // 3. DB đã xóa thành công thì mới xóa file
-    //         if ($artistThumb) $this->deleteThumbArtist($artistThumb);
-
-    //         foreach ($albumThumbs as $thumb) {
-    //             $this->deleteThumbAlbum($thumb);
-    //         }
-
-    //         foreach ($audioFiles as $audio) {
-    //             Storage::disk('zvn_storage_audio')->delete($audio);
-    //         }
-    //     }
-    // }
 
     public function getItem($params = null,$options = null){
         $locale     = app()->getLocale();

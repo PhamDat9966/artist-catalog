@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 14, 2026 at 05:13 AM
+-- Generation Time: Nov 17, 2026 at 04:10 AM
 -- Server version: 8.4.3
 -- PHP Version: 8.4.12
 
@@ -72,11 +72,11 @@ CREATE TABLE `artist` (
 --
 
 INSERT INTO `artist` (`id`, `name`, `thumb`, `status`, `created`, `created_by`, `modified`, `modified_by`) VALUES
-(1, 'Chế Linh', 'chelinh.jpg', 'active', '2026-10-23 00:00:00', 'dat123', '2026-10-23 00:00:00', 'admin'),
-(2, 'Quang Lê', 'quangle.jpg', 'active', '2026-10-23 00:00:00', 'dat123', '2026-10-23 00:00:00', 'admin'),
-(3, 'Thu Minh', 'thuminh.jpg', 'active', '2026-10-23 00:00:00', 'dat123', '2026-10-23 00:00:00', 'admin'),
-(4, 'TLinh', 'tlinh.jpg', 'active', '2026-10-23 00:00:00', 'dat123', '2026-10-23 00:00:00', 'admin'),
-(10, 'Duy Khánh', 'LskYA6jaBX.jpg', 'active', '2026-10-31 00:00:00', 'admin', '2026-11-14 00:00:00', 'admin');
+(1, 'Chế Linh', 'chelinh.jpg', 'active', '2026-10-23 00:00:00', 'dat123', '2026-11-17 00:00:00', 'admin'),
+(2, 'Quang Lê', 'quangle.jpg', 'active', '2026-10-23 00:00:00', 'dat123', '2026-11-17 00:00:00', 'admin'),
+(3, 'Thu Minh', 'thuminh.jpg', 'active', '2026-10-23 00:00:00', 'dat123', '2026-11-17 00:00:00', 'admin'),
+(4, 'TLinh', 'tlinh.jpg', 'active', '2026-10-23 00:00:00', 'dat123', '2026-11-17 00:00:00', 'admin'),
+(10, 'Duy Khánh', 'LskYA6jaBX.jpg', 'active', '2026-10-31 00:00:00', 'admin', '2026-11-17 00:00:00', 'admin');
 
 -- --------------------------------------------------------
 
@@ -96,16 +96,16 @@ CREATE TABLE `artist_genre` (
 --
 
 INSERT INTO `artist_genre` (`artist_id`, `genre_id`, `artist_name`, `genre_name`) VALUES
-(1, 1, NULL, NULL),
-(1, 2, NULL, NULL),
-(2, 1, NULL, NULL),
-(2, 2, NULL, NULL),
-(3, 3, NULL, NULL),
-(4, 3, NULL, NULL),
-(4, 4, NULL, NULL),
-(10, 1, NULL, NULL),
-(10, 2, NULL, NULL),
-(10, 5, NULL, NULL);
+(1, 1, 'Chế Linh', 'Nhạc vàng'),
+(1, 2, 'Chế Linh', 'Nhạc trữ tình'),
+(2, 1, 'Quang Lê', 'Nhạc vàng'),
+(2, 2, 'Quang Lê', 'Nhạc trữ tình'),
+(3, 3, 'Thu Minh', 'Pop'),
+(4, 3, 'TLinh', 'Pop'),
+(4, 4, 'TLinh', 'Rap/Hip-hop'),
+(10, 1, 'Duy Khánh', 'Nhạc vàng'),
+(10, 2, 'Duy Khánh', 'Nhạc trữ tình'),
+(10, 5, 'Duy Khánh', 'Nhạc lính');
 
 -- --------------------------------------------------------
 
@@ -132,8 +132,9 @@ INSERT INTO `genres` (`id`, `name`, `description`, `status`, `created`, `created
 (1, 'Nhạc vàng', 'Nhạc vàng là một dòng nhạc trữ tình, lãng mạn phổ biến tại Việt Nam, có sự kết hợp giữa phong cách tân nhạc và âm điệu dân ca Nam Bộ.', 'active', '2026-11-13 12:47:19', 'admin', '2026-11-14 00:00:00', 'admin'),
 (2, 'Nhạc trữ tình', 'Nhạc trữ tình là một thể loại âm nhạc tập trung bộc lộ, mô tả sâu sắc tình cảm, cảm xúc và tâm trạng của con người', 'active', '2026-11-13 12:47:19', 'admin', '2026-11-14 00:00:00', 'admin'),
 (3, 'Pop', 'Nhạc Pop (viết tắt của từ Popular music trong tiếng Anh, nghĩa là nhạc đại chúng) là một thể loại âm nhạc thương mại hướng đến số đông khán giả.', 'active', '2026-11-13 12:47:19', 'admin', '2026-11-14 00:00:00', 'admin'),
-(4, 'Rap/Hip-hop', 'Rap/Hip-hop là một nền văn hóa nghệ thuật đường phố và một thể loại âm nhạc lớn ra đời vào những năm 1970 tại khu Bronx, thành phố New York, Mỹ, bởi cộng đồng người Mỹ gốc Phi và Mỹ Latinh.', 'active', '2026-11-13 12:47:19', 'admin', '2026-11-14 00:00:00', 'admin'),
-(5, 'Nhạc lính', 'Nhạc lính là một dòng nhạc phổ biến tại miền Nam Việt Nam trước năm 1975, chuyên viết về cuộc sống, tâm tư, nỗi niềm và hình ảnh của người lính (chủ yếu là lính Việt Nam Cộng hòa) trong bối cảnh chiến tranh', 'active', '2026-11-13 12:47:19', 'admin', '2026-11-14 00:00:00', 'admin');
+(4, 'Rap/Hip-hop', 'Rap/Hip-hop là một nền văn hóa nghệ thuật đường phố và một thể loại âm nhạc lớn ra đời vào những năm 1970 tại khu Bronx, thành phố New York, Mỹ, bởi cộng đồng người Mỹ gốc Phi và Mỹ Latinh.', 'active', '2026-11-17 00:00:00', 'admin', '2026-11-17 00:00:00', 'admin'),
+(5, 'Nhạc lính', 'Nhạc lính là một dòng nhạc phổ biến tại miền Nam Việt Nam trước năm 1975, chuyên viết về cuộc sống, tâm tư, nỗi niềm và hình ảnh của người lính (chủ yếu là lính Việt Nam Cộng hòa) trong bối cảnh chiến tranh', 'active', '2026-11-13 12:47:19', 'admin', '2026-11-14 00:00:00', 'admin'),
+(6, 'Nhạc cổ điển', 'Nhạc cổ điển Tây Phương là một truyền thống nghệ thuật âm nhạc phát triển từ thế kỷ XI cho đến nay, nổi bật bởi cấu trúc phức tạp, tính chuẩn mực và hệ thống ký hiệu âm nhạc chi tiết', 'active', '2026-11-17 00:00:00', 'admin', '2026-11-17 00:00:00', 'admin');
 
 -- --------------------------------------------------------
 
@@ -224,7 +225,7 @@ ALTER TABLE `artist`
 -- AUTO_INCREMENT for table `genres`
 --
 ALTER TABLE `genres`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `tracks`

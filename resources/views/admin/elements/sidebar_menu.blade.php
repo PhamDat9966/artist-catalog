@@ -54,6 +54,12 @@
                     <li><a href="{{ route('tracks')}}"> tracks</a></li>
                 </ul>
             </li>
+            <li id='genres'>
+                <a><i class="fa fa-book"></i> Quản lý thể lại âm nhạc<span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu">
+                    <li><a href="{{ route('genres')}}"> genres</a></li>
+                </ul>
+            </li>
         </ul>
     </div>
 </div>

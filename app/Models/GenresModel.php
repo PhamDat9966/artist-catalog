@@ -119,6 +119,9 @@ class GenresModel extends AdminModel
             $userInfo = ['username'=>'admin'];
         }
 
+        $params['created_by']   = $userInfo['username'];
+        $params['created']      = date('Y-m-d');
+
         $params['modified_by']   = $userInfo['username'];
         $params['modified']      = date('Y-m-d');
 
