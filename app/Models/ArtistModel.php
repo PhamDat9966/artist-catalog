@@ -345,11 +345,4 @@ class ArtistModel extends AdminModel
         return $result;
     }
 
-    public function move($params = null,$options = null){
-        $node       = self::find($params['id']);
-        $historyBy  = session('userInfo')['username'];
-        $this->where('id',$params['id'])->update(['modified_by' => $historyBy]);
-        if($params['type'] == 'down') $node->down();
-        if($params['type'] == 'up')   $node->up();
-    }
 }
