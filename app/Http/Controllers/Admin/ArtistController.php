@@ -57,15 +57,15 @@ class ArtistController extends AdminController
         $autoIncrement = $this->model->getItem(null,['task'=>'get-auto-increment']);
         $autoIncrement = $autoIncrement[0]->AUTO_INCREMENT;
 
+        /* Genres: thể loại âm nhạc nghệ sĩ tham gia */
+        $genreList = GenresModel::where('status', 'active')->pluck('name', 'id')->toArray();
+        $selectedGenres = [];   //Danh sách các thể loại âm nhạc mà nghê sĩ tham gia
+
         if($request->id !== null){
             $this->params['id']   = $request->id;
             $autoIncrement        = $this->params['id'];
             $item = $this->model->getItem($this->params,['task'=>'get-item']);
 
-            //Genres: thể loại âm nhạc nghệ sĩ tham gia
-            $genreList = GenresModel::where('status', 'active')->pluck('name', 'id')->toArray();
-
-            $selectedGenres = [];
             if (!empty($item['id'])) {
                 $selectedGenres = $item->genres()->pluck('genres.id')->toArray();
             }

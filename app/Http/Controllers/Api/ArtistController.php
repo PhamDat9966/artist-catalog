@@ -28,13 +28,19 @@ class ArtistController extends AdminController
         $this->params['filter']['modified']  = $request->input('filter_modified');
         $this->params['filter']['date']      = $request->input('filter_date');
 
+        //pagination:
+        $this->params['offset']              = $request->input('offset',0);
+        $this->params['limit']               = $request->input('limit',4);
+
+        // dd($request->all());
 
         // $artists = DB::table('artist')
         //             ->where('status', 'active')
         //             ->orderByDesc('id')
         //             ->paginate(10);
 
-        $artists                = $this->model->listItems($this->params,['task' => "admin-list-items"]);
+        $artists                = $this->model->listItemsAPI($this->params,['task' => "admin-list-items"]);
+        // dd($artists->toArray());
         $artistsStatusCount     = $this->model->countItems($this->params,['task' => "admin-count-items-group-by-status"]);
 
         return response()->json([
