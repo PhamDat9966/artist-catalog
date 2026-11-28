@@ -15,5 +15,6 @@ Route::get('artists', [ArtistController::class, 'index']);
 Route::get('artists/{id}', [ArtistController::class, 'show'])->whereNumber('id');
 
 
-Route::get('album', [AlbumController::class, 'index']);
+Route::get('artists/{artistID}/albums', [AlbumController::class, 'index'])->whereNumber('artistID');
+
 Route::get('album/{id}', [AlbumController::class, 'show'])->whereNumber('id');

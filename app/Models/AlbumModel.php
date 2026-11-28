@@ -58,6 +58,55 @@ class AlbumModel extends AdminModel
         return $result;
     }
 
+    public function listItemsAPI($params = null,$options = null){
+        // dd($params);
+        $result = null;
+        if($options['task'] == 'admin-list-items'){
+            $query = $this->from('album', 'a')
+                          ->select('a.id','a.artist_id','a.artist_name','a.name','a.thumb','a.status','a.created','a.created_by','a.modified','a.modified_by')
+                          ->where('a.artist_id',$params['artist_id']);
+
+            if(isset($params['filter']['status'])){
+                if($params['filter']['status'] !== "all"){
+                $query->where('a.status','=',$params['filter']['status']);
+
+                }
+            }
+
+
+            if($params['search'] !== ""){
+
+                $params['search']['value'] = trim($params['search']['value'] ?? '');
+
+                if($params["search"]["field"] == "all"){
+
+                    $query->where(function ($query) use ($params){
+                        foreach ($this->fieldSearchAccepted as $column) {
+                            {
+                                $query->orWhere('a.'.$column,"like","%".$params["search"]["value"]."%");
+                            }
+                        }
+                    }
+                );
+
+                }else if(in_array($params["search"]["field"], $this->fieldSearchAccepted)){
+                    $query->where('a.'.$params["search"]["field"],"like","%".$params["search"]["value"]."%");
+                    //$query->where($params["search"]["field"],"like","%{$params["search"]["value"]}%");
+                }
+            }
+
+            // $total = (clone $query)->count();
+
+            $result = $query->offset($params['offset'] ?? 0)
+                                ->limit($params['limit'] ?? 4)
+                                ->orderBy('a.id', 'desc')
+                                ->get();
+
+        }
+
+        return $result;
+    }
+
     public function countItems($params = null,$options = null){
 
         $result = null;
